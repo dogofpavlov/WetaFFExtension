@@ -1,4 +1,4 @@
-# WetaFFExtension
+# Weta Workshop Website FireFox Extension
 
 This is an extension for Firefox to add a tiny bit of extra but extremely useful information to the Weta Workshop website.
 

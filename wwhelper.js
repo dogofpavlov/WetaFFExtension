@@ -1,14 +1,4 @@
-/*
-	Understanding what we're doing here.
-	
-	There is a "My Orders" Page	and there is a "Pre-Orders & Payment Plans" Page.
-	
-	Each order item shown on BOTH of these pages has 2 different IDs we need... the first ID is the actual "Order #", the 2nd ID is the ID Weta uses as an index/key to reference data related to the order in their database.
-	
-	Both of these pages will have a matching "Order #", but the index/key used as reference is different for each page.
-
-*/
-
+//Create a status bar 
 document.body.style.borderTop = "50px solid #e36100";
 const statusBar = document.createElement("div");
 statusBar.style.position = "absolute";
@@ -24,22 +14,56 @@ statusBar.style.paddingRight = "30px";
 statusBar.style.color = "#FFF";
 statusBar.style.fontWeight = "bold";
 statusBar.style.alignItems = "center";
-statusBar.innerHTML='<div style="margin-right:auto;">The Cyber Hobbit\'s Website Helper is Enabled</div><div style="">Loading</div>';
-
+statusBar.innerHTML='<div style="margin-right:auto;">The Cyber Hobbit\'s Website Helper is Enabled</div><div id="tch-loadingStatus"></div>';
 document.body.appendChild(statusBar);
 
+//get our loading status div
+const loadingStatus = document.querySelector("#tch-loadingStatus");
+loadingStatus.innerText = "Loading...";
 
 const myOrdersData = [];
 const parser = new DOMParser();
 
-const addTheNameOfTheItem = ()=>{
+const letsFixThatShit = ()=>{
 
+    let loadTotal = 0;
+    let loadComplete = 0;
 
-	/*
-		First we need to load the "My Orders" page to retrieve the last 50 orders.
-	*/
+    //what we run after each item has loaded
+    const tryComplete = ()=>{
+        if(loadTotal!==0 && loadComplete!==0){
+            //update the progress
+            const loadPercentage = Math.round((loadComplete/loadTotal)*100);
+            loadingStatus.innerText = "Loading "+loadPercentage+"%";
+            if(loadComplete===loadTotal){
+                
+                //lets grab the rows and do our matching
+                const idColumnTDs = document.querySelectorAll("td.col.id");
+
+                let totalMatchesFound = 0;
+                console.log("before matching");
+                for(let i=0; i<idColumnTDs.length; i++){
+                    const itemIdTD = idColumnTDs[i];
+                    const itemOrderID = itemIdTD.innerText;
+                    
+                    //find matching page element with that order ID
+                    const matchFromOurData = myOrdersData.find(($itemData)=>{
+                        return $itemData.orderID===itemOrderID;
+                    });
+
+                    //if found (which it should?) we can FINALLY add the item name.
+                    if(matchFromOurData){
+                        totalMatchesFound++;
+                        itemIdTD.innerHTML=itemOrderID+"<div style='font-weight:700; font-size:12px'>"+matchFromOurData.itemName+"</div>";
+                    }
+                }
+                loadingStatus.innerText = "Item names have been added!";
+            }
+        }
+    }
+
+    //First we need to load the "My Orders" page to retrieve the last 50 orders.
 	const myOrdersPath = "https://www.wetanz.com/us/sales/order/history/?limit=50";
-
 	fetch(myOrdersPath).then(($response)=>{
 		return $response.text();
 	}).then(($html)=>{
@@ -47,130 +71,34 @@ const addTheNameOfTheItem = ()=>{
 		const htmlDocMyOrders = parser.parseFromString($html,"text/html");
 		//find the rows
 		const myOrdersMatches = htmlDocMyOrders.querySelectorAll("#my-orders-table tbody tr");
-		//now let's convert those rows into something easier to manage
+		//set total number of items to load
+        loadTotal = myOrdersMatches.length;
+
 		for(let i=0; i<myOrdersMatches.length; i++){
-			
-			const trRow = myOrdersMatches[i];			
+            //find per row td cells
 			const trRowCells = myOrdersMatches[i].cells;
-			const rowTDOrderID = trRowCells[0].innerText;
-			const rowTDActionURL = trRowCells[4].firstElementChild.href;
-			myOrdersData.push({index:i, orderID:rowTDOrderID, actionURL:rowTDActionURL});
-		}
-		
-		//Now that we have our initial data, we can load each individual page "actionURL" to retrieve the name of item.
-		//lets use a different for loop just make things a bit easier to look at and understand
-		for(let i=0; i<myOrdersData.length; i++){
-			let itemData = myOrdersData[i];
-			
-		}
-		
-		console.log("And our data:");
-		console.log(myOrdersData);
-		//const wtf = mapDOM($html,true);
-		//console.log("Loaded My Orders");
-		//console.log(wtf);
-		//const split1 = $html.split('product name product-item-name">')
-	});
-	
-	
-	/*
-    const baseMyOrdersPath = "https://www.wetanz.com/us/sales/order/view/order_id/";
+            //order ID
+			const orderID = trRowCells[0].innerText;
+            //URL of each item
+			const orderItemURL = trRowCells[4].firstElementChild.href;
+            //build data for each
+            const orderItemData = {index:i, orderID:orderID, orderItemURL:orderItemURL};
+			myOrdersData.push(orderItemData);
 
-    if(matches[0] && matches[0].children && matches[0].children[2] && matches[0].children[2].children){
-
-        const tableRows = matches[0].children[2].children;
-
-        for(let i=0; i<tableRows.length; i++){
-    
-            const rowCells = tableRows[i].cells;
-
-            const viewURL = rowCells[5].firstElementChild.href;
-
-            const split1 = viewURL.split("partialpayment_id/");
-            
-            const rowID = split1[1];
-
-            
-    
-            const pathToLoad = baseMyOrdersPath+rowID;
-            console.log(pathToLoad);
-            
-            
-            fetch(pathToLoad).then(($response)=>{
+            //now we load the individual "My Order" item pages to retreive the item name.
+            fetch(orderItemURL).then(($response)=>{
                 return $response.text();
-            }).then(($html)=>{
-
-                const wtf = mapDOM($html,true);
-                console.log("got it?");
-                console.log(wtf);
-                //const split1 = $html.split('product name product-item-name">')
+            }).then(($htmlItem)=>{
+                //parse the htmlText into something we can query
+                const myOrderItemHTML = parser.parseFromString($htmlItem,"text/html");
+                //find the item name
+                const myOrderItemMatches = myOrderItemHTML.querySelector(".product-item-name");
+                //store the item name in our data
+                orderItemData.itemName = myOrderItemMatches.innerText;
+                loadComplete++;
+                tryComplete();
             });
-            
-            //rowFirstTd.innerHTML+="<br/>yoyoyo";
-    
-    
-        }
-
-    }
-	
-	*/
+		}
+	});
 }
-
-
-
-
-
-addTheNameOfTheItem();
-
-
-/*
-function mapDOM(element, json) {
-    var treeObject = {};
-    
-    console.log("TRY PARSE");
-    // If string convert to document Node
-    if (typeof element === "string") {
-        if (window.DOMParser) {
-              parser = new DOMParser();
-              docNode = parser.parseFromString(element,"text/html");
-              console.log(docNode);
-        } else { // Microsoft strikes again
-              docNode = new ActiveXObject("Microsoft.XMLDOM");
-              docNode.async = false;
-              docNode.loadXML(element); 
-        } 
-        element = docNode.firstChild;
-    }
-    
-    //Recursively loop through DOM elements and assign properties to object
-    function treeHTML(element, object) {
-        object["type"] = element.nodeName;
-        var nodeList = element.childNodes;
-        if (nodeList != null) {
-            if (nodeList.length) {
-                object["content"] = [];
-                for (var i = 0; i < nodeList.length; i++) {
-                    if (nodeList[i].nodeType == 3) {
-                        object["content"].push(nodeList[i].nodeValue);
-                    } else {
-                        object["content"].push({});
-                        treeHTML(nodeList[i], object["content"][object["content"].length -1]);
-                    }
-                }
-            }
-        }
-        if (element.attributes != null) {
-            if (element.attributes.length) {
-                object["attributes"] = {};
-                for (var i = 0; i < element.attributes.length; i++) {
-                    object["attributes"][element.attributes[i].nodeName] = element.attributes[i].nodeValue;
-                }
-            }
-        }
-    }
-    treeHTML(element, treeObject);
-    
-    return (json) ? JSON.stringify(treeObject) : treeObject;
-}
-
-*/
+letsFixThatShit();

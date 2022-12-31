@@ -1,10 +1,9 @@
 {
-
   "manifest_version": 2,
-  "name": "WetaWorkshopBetter",
+  "name": "WetaWorkshop Name Fixer",
   "version": "1.0",
 
-  "description": "Helps the Weta Workshop Account section work better.",
+  "description": "This extension adds the name of items to the 'My Orders' and 'Pre-Orders & Payment Plans' pages... because they're missing.",
 
   "icons": {
     "48": "icons/icon-48.png"
@@ -16,5 +15,4 @@
       "js": ["wwhelper.js"]
     }
   ]
-
 }

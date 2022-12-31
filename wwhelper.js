@@ -23,9 +23,9 @@ if(currentURL.indexOf("sales/order/history")!==-1 || currentURL.indexOf("partial
     statusBar.innerHTML='<div style="margin-right:auto;">The Cyber Hobbit\'s Website Helper is Enabled</div><div id="tch-loadingStatus"></div>';
     document.body.appendChild(statusBar);
 
-    //get our loading status div
+    //get our loading status div we just created.
     const loadingStatus = document.querySelector("#tch-loadingStatus");
-    loadingStatus.innerText = "Loading...";
+    loadingStatus.innerText = "Loading...";    
     
     const myOrdersData = [];
     const parser = new DOMParser();
@@ -80,7 +80,6 @@ if(currentURL.indexOf("sales/order/history")!==-1 || currentURL.indexOf("partial
                     //lets grab the rows and do our matching
                     const idColumnTDs = document.querySelectorAll("td.col.id");
                     //begin the fix with the data we found
-                    let totalMatchesFound = 0;
                     for(let i=0; i<idColumnTDs.length; i++){
                         const itemIdTD = idColumnTDs[i];
                         const itemOrderID = itemIdTD.innerText;
@@ -90,7 +89,6 @@ if(currentURL.indexOf("sales/order/history")!==-1 || currentURL.indexOf("partial
                         });
                         //if found (which it always should right?) we can FINALLY add the item name.
                         if(matchFromOurData){
-                            totalMatchesFound++;
                             itemIdTD.innerHTML=itemOrderID+"<div style='font-weight:700; font-size:12px'>"+matchFromOurData.itemName+"</div>";
                         }
                     }

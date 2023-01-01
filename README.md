@@ -1,6 +1,9 @@
 # Weta Workshop Name Fixer 
 
+
 This is a browser extension made for Firefox that modifies Weta Workshop's website to show more information.
+https://addons.mozilla.org/en-US/firefox/addon/wetaworkshop-name-fixer/
+
 
 # Why does this extension exist?
 

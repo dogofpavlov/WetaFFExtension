@@ -6,6 +6,13 @@ This is a browser extension made for Firefox that modifies Weta Workshop's websi
 https://addons.mozilla.org/en-US/firefox/addon/wetaworkshop-name-fixer/
 
 
+# How to verify this code is actually what is on the FF Extension install page
+
+If you want to verify the code in this repository is what is actually installed in your browser when you click the "Install" button on the page above here are steps you can do to verify.
+
+On the install page listed above this paragraph, right click on the "Add to Firefox" button and choose "Save Link as" (it could be "Save Target as"). This will allow you to download an "xpi" file. This "xpi" file is a compressed file just like a "zip". Change the extension on this file to "zip". Now you should be able to extract the files inside just like any normal zip. Inside you will find a "wwhelper.js" file. Now you should be able to open this file in a text editor to see the code matches exactly what is commited into this repo.
+
+
 # Why does this extension exist?
 
 Well because Weta Workshop's website is missing what I consider to be VERY helpful information... the "Name" of items you have ordered.

@@ -1,21 +1,25 @@
 # Weta Workshop Name Fixer 
 
 
-This is a browser extension made for Firefox that modifies Weta Workshop's website to show more information.
+This is a browser extension made for Firefox & Chrome that modifies Weta Workshop's website to show more information.
 
+For Firefox, go here:
 https://addons.mozilla.org/en-US/firefox/addon/wetaworkshop-name-fixer/
 
+For Chrome, go here:
+https://chrome.google.com/webstore/detail/wetaworkshop-name-fixer/jcegmpgeakdeomblnckmmkjhfbojkfod
 
-# How to verify this code is actually what is on the FF Extension install page
+
+# How to verify this code is actually what is on the Install page (this only works for Firefox)
 
 If you want to verify the code in this repository is what is actually installed in your browser when you click the "Install" button on the page above here are steps you can do to verify.
 
-On the install page listed above this paragraph, right click on the "Add to Firefox" button and choose "Save Link as" (it could be "Save Target as"). This will allow you to download an "xpi" file. This "xpi" file is a compressed file just like a "zip". Change the extension on this file to "zip". Now you should be able to extract the files inside just like any normal zip. Inside you will find a "wwhelper.js" file. Now you should be able to open this file in a text editor to see the code matches exactly what is commited into this repo.
+On the install page listed above this paragraph, right click on the "Add to Firefox" button and choose "Save Link as" (it could be "Save Target as"). This will allow you to download an "xpi" file. This "xpi" file is a compressed file just like a "zip". Change the extension on this file to "zip". Now you should be able to extract the files just like any normal "zip". Inside you will find a "wwhelper.js" file. Now you should be able to open this file in a text editor to see the code matches exactly what is commited into this repo.
 
 
 # Why does this extension exist?
 
-Well because Weta Workshop's website is missing what I consider to be VERY helpful information... the "Name" of items you have ordered.
+Weta Workshop's website is missing what I consider to be VERY helpful information... the "Name" of items you have ordered.
 
 When you login to Weta's website and go to either the "My Orders" or "Pre-orders & Payment Plans" page, each of these sections will show a list of all the things you have ordered or pre-ordered. The problem is they don't say the name of the items you have ordered. This extension was built to simply add the names back into the list to make it much easier to understand what you're looking at (Something I have messaged Weta to fix but to no avail).
 
